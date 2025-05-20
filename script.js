@@ -59,7 +59,7 @@ async function sendMessage() {
             headers: {
                 "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json",
-                "HTTP-Referer": "http://localhost",
+                "HTTP-Referer": "https://jheemaz21.github.io/chat-anime/",
                 "X-Title": "AI-chan Anime Chat"
             },
             body: JSON.stringify({
