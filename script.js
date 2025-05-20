@@ -1,4 +1,4 @@
-const apiKey = "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"; // Ganti dengan API key OpenRouter kamu
+const apiKey = "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"; // Ganti dengan API key OpenRouter kamu
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
