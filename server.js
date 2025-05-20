@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const configuration = new Configuration({
-  apiKey: "YOUR_OPENAI_API_KEY", // Ganti dengan API key kamu
+  apiKey: "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", // Ganti dengan API key kamu
 });
 const openai = new OpenAIApi(configuration);
 
