@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0d1117 0%, #1e2a3a 100%);
+    font-family: 'Orbitron', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #c9d1d9;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+    height: 600px;
+    background: #161b22;
+    border-radius: 25px;
+    box-shadow: 0 0 40px rgba(0, 150, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeSlideIn 0.7s ease forwards;
+}
+
+.header {
+    background: #0d47a1;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    user-select: none;
+    box-shadow: 0 2px 8px rgba(0, 150, 255, 0.3);
+}
+
+.chat-box {
+    flex: 1;
+    padding: 20px 25px;
+    background: #0e1621;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1976d2 #0e1621;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Scrollbar */
+.chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-box::-webkit-scrollbar-track {
+    background: #0e1621;
+    border-radius: 10px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background-color: #1976d2;
+    border-radius: 10px;
+    border: 2px solid #0e1621;
+}
+
+/* Chat bubble */
+.message {
+    display: flex;
+    max-width: 85%;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: url('https://cdn.pixabay.com/photo/2025/05/14/16/04/girl-9599933_960_720.png') no-repeat center/cover;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.3);
+}
+
+.message.bot {
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.message.bot .bubble {
+    background: #1976d2;
+    color: #e3f2fd;
+    border-radius: 20px 20px 20px 5px;
+    padding: 12px 18px;
+    font-weight: 600;
+    animation: fadeInUp 0.4s ease;
+}
+
+.message.user {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.message.user .bubble {
+    background: #2196f3;
+    color: #fff;
+    border-radius: 20px 20px 5px 20px;
+    padding: 12px 18px;
+    font-weight: 700;
+    animation: fadeInUp 0.4s ease;
+}
+
+.typing {
+    font-style: italic;
+    color: #42a5f5;
+    animation: pulse 1.2s infinite alternate;
+    font-weight: 600;
+}
+
+/* Input & button */
+.input-area {
+    display: flex;
+    border-top: 2px solid #0d47a1;
+    background: #0e1621;
+    padding: 15px 20px;
+}
+
+input[type="text"] {
+    flex: 1;
+    border: 2px solid #1976d2;
+    border-radius: 35px;
+    padding: 12px 20px;
+    font-size: 16px;
+    outline: none;
+    font-family: 'Orbitron', sans-serif;
+    background-color: #101c2e;
+    color: #e3f2fd;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #64b5f6;
+    box-shadow: 0 0 8px #64b5f6;
+}
+
+button {
+    margin-left: 15px;
+    background: linear-gradient(45deg, #2196f3, #0d47a1);
+    border: none;
+    border-radius: 35px;
+    padding: 0 25px;
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: background 0.4s ease;
+    box-shadow: 0 3px 12px rgba(33, 150, 243, 0.7);
+    user-select: none;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #0d47a1, #2196f3);
+    box-shadow: 0 0 20px #2196f3;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
