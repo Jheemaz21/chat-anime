@@ -1,93 +1,84 @@
-const apiKey = "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"; // Ganti dengan API key OpenRouter kamu
+const chatBox = document.querySelector(".chat-box");
+const input = document.querySelector("input");
+const button = document.querySelector("button");
+const audioClick = document.getElementById("clickSound");
+const typingDelay = 30;
 
-const chat = document.getElementById("chat");
-const input = document.getElementById("input");
-const sendBtn = document.getElementById("sendBtn");
-const clickSound = document.getElementById("clickSound");
+// Ganti URL ini dengan URL backend kamu (misal dari Render atau Replit)
+const API_URL = "https://your-backend-name.onrender.com/api/chat"; // Ganti dengan backend kamu
 
-// Fungsi suara teks bahasa Indonesia
-function speak(text) {
-    if (!window.speechSynthesis) return;
-    const msg = new SpeechSynthesisUtterance(text);
-    msg.lang = 'id-ID';
-    msg.pitch = 1.2;
-    msg.rate = 1.05;
-    speechSynthesis.speak(msg);
+// Tambahkan pesan ke UI
+function addMessage(content, sender = "user") {
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `message ${sender}`;
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.innerText = content;
+
+  if (sender === "bot") {
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(bubble);
+  } else {
+    messageDiv.appendChild(bubble);
+  }
+
+  chatBox.appendChild(messageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Fungsi menambah pesan ke chat dengan avatar dan bubble
-function addMessage(text, sender = "bot") {
-    const messageEl = document.createElement("div");
-    messageEl.classList.add("message", sender);
+// Efek ketik
+async function typeEffect(text, delay = typingDelay) {
+  const bubble = document.createElement("div");
+  bubble.className = "bubble typing";
+  const messageDiv = document.createElement("div");
+  messageDiv.className = "message bot";
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  messageDiv.appendChild(avatar);
+  messageDiv.appendChild(bubble);
+  chatBox.appendChild(messageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
 
-    if (sender === "bot") {
-        const avatar = document.createElement("div");
-        avatar.classList.add("avatar");
-        messageEl.appendChild(avatar);
-    }
+  for (let i = 0; i <= text.length; i++) {
+    bubble.innerText = text.slice(0, i);
+    await new Promise(r => setTimeout(r, delay));
+  }
 
-    const bubble = document.createElement("div");
-    bubble.classList.add("bubble");
-    bubble.textContent = text;
-    messageEl.appendChild(bubble);
-
-    chat.appendChild(messageEl);
-    chat.scrollTop = chat.scrollHeight;
-
-    if (sender === "bot") speak(text);
+  bubble.classList.remove("typing");
 }
 
-// Fungsi kirim pesan ke AI
+// Kirim pesan ke backend AI
 async function sendMessage() {
-    const text = input.value.trim();
-    if (!text) return;
+  const userMessage = input.value.trim();
+  if (!userMessage) return;
 
-    clickSound.play(); // mainkan suara klik tombol
+  addMessage(userMessage, "user");
+  input.value = "";
+  audioClick.play();
 
-    addMessage(text, "user");
-    input.value = "";
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userMessage }),
+    });
 
-    const typingMsg = document.createElement("div");
-    typingMsg.className = "typing";
-    typingMsg.textContent = "AI-chan sedang mengetik...";
-    chat.appendChild(typingMsg);
-    chat.scrollTop = chat.scrollHeight;
-
-    try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://jheemaz21.github.io/chat-anime/",
-                "X-Title": "AI-chan Anime Chat"
-            },
-            body: JSON.stringify({
-                model: "openai/gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "system",
-                        content: "Kamu adalah AI-chan, asisten anime kawaii yang ramah dan membantu, dan kamu menjawab dalam Bahasa Indonesia."
-                    },
-                    { role: "user", content: text }
-                ]
-            })
-        });
-
-        const data = await response.json();
-        const reply = data.choices[0].message.content.trim();
-
-        chat.removeChild(typingMsg);
-        addMessage(reply, "bot");
-    } catch (error) {
-        console.error(error);
-        chat.removeChild(typingMsg);
-        addMessage("Ups! AI-chan mengalami kesalahan teknis.", "bot");
+    const data = await response.json();
+    if (data.reply) {
+      await typeEffect(data.reply);
+    } else {
+      addMessage("Maaf, terjadi kesalahan saat membalas.", "bot");
     }
+  } catch (error) {
+    console.error("Error:", error);
+    addMessage("Gagal terhubung ke AI. Coba lagi nanti.", "bot");
+  }
 }
 
-// Event listener tombol dan enter key
-sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
+button.addEventListener("click", sendMessage);
+input.addEventListener("keypress", e => {
+  if (e.key === "Enter") sendMessage();
 });
